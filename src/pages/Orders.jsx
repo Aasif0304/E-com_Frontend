@@ -4,6 +4,9 @@ import { useAuth } from "../context/AuthContext";
 import { getOrders, cancelOrder } from "../api/orders";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import PurchaseHeader from "../components/PurchaseHeader";
+
+const TRACK_STEPS = ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED"];
 
 export default function Orders() {
   const { token } = useAuth();
@@ -70,37 +73,35 @@ export default function Orders() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
       <Navbar />
 
-      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
-        <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-              My Orders
-            </h1>
-            <p className="text-sm text-slate-500">
-              Track your past orders and current delivery statuses.
-            </p>
-          </div>
-
+      <PurchaseHeader
+        badge="Order History & Tracking"
+        title="My Orders"
+        subtitle="Track live delivery progress and view details of your flagship purchases."
+        rightSlot={
           <button
             onClick={loadOrders}
-            className="self-start rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 shadow-sm"
+            className="rounded-full border border-white/25 bg-slate-950/45 px-4 py-2 text-xs font-bold text-white backdrop-blur-md hover:bg-white hover:text-slate-900 transition shadow-md cursor-pointer"
           >
             🔄 Refresh Orders
           </button>
-        </div>
+        }
+      />
 
+      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 flex-1 w-full">
         {error && (
-          <div className="mb-6 rounded-md bg-red-50 p-3 text-xs text-red-700 border border-red-200">
-            {error}
+          <div className="mb-6 rounded-xl bg-red-50 p-3.5 text-xs font-medium text-red-700 border border-red-200 flex items-center gap-2">
+            <span>⚠️</span>
+            <span>{error}</span>
           </div>
         )}
 
         {successMsg && (
-          <div className="mb-6 rounded-md bg-emerald-50 p-3 text-xs text-emerald-700 border border-emerald-200">
-            {successMsg}
+          <div className="mb-6 rounded-xl bg-emerald-50 p-3.5 text-xs font-medium text-emerald-700 border border-emerald-200 flex items-center gap-2">
+            <span>✅</span>
+            <span>{successMsg}</span>
           </div>
         )}
 
@@ -109,22 +110,25 @@ export default function Orders() {
             {[1, 2, 3].map((n) => (
               <div
                 key={n}
-                className="h-36 animate-pulse rounded-xl border border-slate-200 bg-white p-6"
+                className="h-40 animate-pulse rounded-3xl border border-slate-200 bg-white p-6"
               />
             ))}
           </div>
         ) : orders.length === 0 ? (
-          <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center shadow-sm">
-            <span className="text-6xl block mb-4">📦</span>
-            <h2 className="text-lg font-semibold text-slate-800">No Orders Placed Yet</h2>
-            <p className="mt-1 text-sm text-slate-500 max-w-sm mx-auto">
+          <div className="rounded-3xl border border-slate-200/80 bg-white p-12 text-center shadow-xl shadow-slate-200/40 max-w-lg mx-auto my-6">
+            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-3xl bg-indigo-50 text-5xl">
+              📦
+            </div>
+            <h2 className="text-xl font-black text-slate-900">No Orders Placed Yet</h2>
+            <p className="mt-2 text-sm text-slate-500 max-w-sm mx-auto">
               You haven't placed any orders yet. Discover our latest products and place your first order!
             </p>
             <Link
               to="/"
-              className="mt-6 inline-block rounded-md bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark transition shadow-sm"
+              className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-indigo-600 px-6 py-3 text-sm font-bold text-white hover:from-brand-dark hover:to-indigo-700 transition shadow-lg shadow-brand/25"
             >
-              Start Shopping
+              <span>Start Shopping</span>
+              <span>→</span>
             </Link>
           </div>
         ) : (
@@ -132,20 +136,21 @@ export default function Orders() {
             {orders.map((order) => {
               const canCancel =
                 order.status === "PENDING" || order.status === "CONFIRMED";
+              const activeStepIdx = TRACK_STEPS.indexOf(order.status);
 
               return (
                 <div
                   key={order.id}
-                  className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
+                  className="rounded-3xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-xs transition-all hover:shadow-lg"
                 >
                   {/* Order Top Bar */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
                     <div className="flex items-center gap-3">
-                      <span className="font-bold text-slate-900 text-base">
+                      <span className="font-black text-slate-900 text-base">
                         Order #{order.id}
                       </span>
                       <span
-                        className={`inline-block rounded-full border px-2.5 py-0.5 text-xs font-bold ${getStatusBadge(
+                        className={`inline-block rounded-full border px-3 py-0.5 text-[11px] font-bold ${getStatusBadge(
                           order.status
                         )}`}
                       >
@@ -155,7 +160,7 @@ export default function Orders() {
 
                     <div className="text-xs text-slate-400">
                       Placed on:{" "}
-                      <span className="text-slate-600 font-medium">
+                      <span className="text-slate-700 font-semibold">
                         {order.created_at
                           ? new Date(order.created_at).toLocaleString("en-IN", {
                               dateStyle: "medium",
@@ -166,16 +171,44 @@ export default function Orders() {
                     </div>
                   </div>
 
+                  {/* Live Order Progress Stepper */}
+                  {order.status !== "CANCELLED" && activeStepIdx !== -1 && (
+                    <div className="py-4 border-b border-slate-100">
+                      <div className="grid grid-cols-4 gap-2">
+                        {TRACK_STEPS.map((stepLabel, idx) => {
+                          const completed = idx <= activeStepIdx;
+                          return (
+                            <div key={stepLabel} className="flex flex-col gap-1.5">
+                              <div
+                                className={`h-1.5 rounded-full transition-all ${
+                                  completed ? "bg-gradient-to-r from-brand to-emerald-500" : "bg-slate-200"
+                                }`}
+                              />
+                              <span
+                                className={`text-[10px] font-bold tracking-wide uppercase ${
+                                  completed ? "text-slate-800" : "text-slate-400"
+                                }`}
+                              >
+                                {completed ? "✓ " : ""}
+                                {stepLabel}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Delivery & Items info */}
-                  <div className="py-3 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                  <div className="py-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                     <div>
-                      <span className="font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                      <span className="font-bold text-slate-400 uppercase tracking-wider block mb-1">
                         Delivery Address
                       </span>
-                      <p className="font-semibold text-slate-800">
+                      <p className="font-bold text-slate-800">
                         {order.recipient_name} ({order.phone})
                       </p>
-                      <p className="text-slate-600">
+                      <p className="text-slate-600 mt-0.5">
                         {order.address_line1}
                         {order.address_line2 ? `, ${order.address_line2}` : ""},{" "}
                         {order.city}, {order.state} - {order.postal_code}
@@ -184,11 +217,11 @@ export default function Orders() {
 
                     <div className="md:text-right flex flex-col justify-end">
                       <span className="text-xs text-slate-400 block">Total Amount</span>
-                      <span className="text-lg font-extrabold text-slate-900">
+                      <span className="text-xl font-black text-slate-900">
                         ₹{Number(order.total_amount).toLocaleString("en-IN")}
                       </span>
-                      <span className="text-[11px] text-slate-400">
-                        Payment: Cash on Delivery
+                      <span className="text-[11px] font-medium text-slate-400">
+                        Payment: Cash / UPI on Delivery
                       </span>
                     </div>
                   </div>
@@ -199,7 +232,7 @@ export default function Orders() {
                       <button
                         onClick={() => handleCancel(order.id)}
                         disabled={cancellingId === order.id}
-                        className="rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-100 transition disabled:opacity-50 cursor-pointer"
+                        className="rounded-xl border border-red-200 bg-red-50 px-4 py-1.5 text-xs font-bold text-red-700 hover:bg-red-100 transition disabled:opacity-50 cursor-pointer"
                       >
                         {cancellingId === order.id ? "Cancelling..." : "Cancel Order"}
                       </button>
@@ -215,4 +248,3 @@ export default function Orders() {
     </div>
   );
 }
-

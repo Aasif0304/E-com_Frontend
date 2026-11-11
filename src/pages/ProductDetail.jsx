@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import storeBg from "../assets/store-bg.jpg";
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -148,8 +149,36 @@ export default function ProductDetail() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900">
       <Navbar />
+
+      {/* Flagship Store Breadcrumb Banner */}
+      <div className="relative overflow-hidden bg-slate-900 border-b border-white/10">
+        <img
+          src={storeBg}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover object-center opacity-70"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/60 to-indigo-950/75" />
+        <div className="relative z-10 mx-auto max-w-7xl px-4 py-4 sm:px-6 flex flex-wrap items-center justify-between gap-2">
+          <nav className="flex items-center gap-2 text-xs font-medium text-slate-300">
+            <Link to="/" className="hover:text-white transition">
+              Home
+            </Link>
+            <span>›</span>
+            <Link to="/" className="hover:text-white transition">
+              {categoryName}
+            </Link>
+            <span>›</span>
+            <span className="text-amber-200 font-semibold truncate max-w-xs">{product.name}</span>
+          </nav>
+
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-[11px] font-bold text-emerald-300 backdrop-blur-md">
+            <span>✓</span> ShopCart Flagship Assured
+          </span>
+        </div>
+      </div>
 
       {/* Toast Notification */}
       {toastMessage && (
@@ -165,26 +194,13 @@ export default function ProductDetail() {
       )}
 
       {/* Main Container */}
-      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
-        {/* Flipkart Breadcrumbs */}
-        <nav className="mb-4 flex items-center gap-2 text-xs font-medium text-slate-500">
-          <Link to="/" className="hover:text-brand transition">
-            Home
-          </Link>
-          <span>›</span>
-          <Link to="/" className="hover:text-brand transition">
-            {categoryName}
-          </Link>
-          <span>›</span>
-          <span className="text-slate-800 truncate max-w-xs">{product.name}</span>
-        </nav>
-
-        {/* 🌟 Flipkart 2-Column Product Showcase */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+        {/* 🌟 Luxury 2-Column Product Showcase */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xl shadow-slate-200/50">
           {/* ================= LEFT COLUMN: BIG IMAGE & BUY BUTTONS ================= */}
           <div className="lg:col-span-5 flex flex-col space-y-6">
             {/* Big High-Resolution Product Image */}
-            <div className="relative w-full h-[400px] sm:h-[480px] rounded-2xl border border-slate-200 bg-white p-4 flex items-center justify-center overflow-hidden group shadow-inner">
+            <div className="relative w-full h-[380px] sm:h-[460px] rounded-3xl border border-slate-200/80 bg-slate-50/50 p-4 flex items-center justify-center overflow-hidden group shadow-inner">
               {imageUrl ? (
                 <img
                   src={imageUrl}
@@ -207,15 +223,15 @@ export default function ProductDetail() {
 
               {/* Stock Status Pill on Top */}
               {isOutOfStock ? (
-                <span className="absolute top-4 left-4 rounded-lg bg-rose-600 px-3 py-1 text-xs font-bold text-white shadow-md uppercase tracking-wider">
+                <span className="absolute top-4 left-4 rounded-xl bg-rose-600 px-3 py-1 text-xs font-bold text-white shadow-md uppercase tracking-wider">
                   Out of Stock
                 </span>
               ) : product.stock <= 5 ? (
-                <span className="absolute top-4 left-4 rounded-lg bg-amber-500 px-3 py-1 text-xs font-bold text-white shadow-md uppercase tracking-wider animate-pulse">
+                <span className="absolute top-4 left-4 rounded-xl bg-amber-500 px-3 py-1 text-xs font-bold text-white shadow-md uppercase tracking-wider animate-pulse">
                   Only {product.stock} Left!
                 </span>
               ) : (
-                <span className="absolute top-4 left-4 rounded-lg bg-emerald-600 px-3 py-1 text-xs font-bold text-white shadow-md uppercase tracking-wider">
+                <span className="absolute top-4 left-4 rounded-xl bg-emerald-600 px-3 py-1 text-xs font-bold text-white shadow-md uppercase tracking-wider">
                   In Stock
                 </span>
               )}
@@ -223,22 +239,22 @@ export default function ProductDetail() {
               {/* Share / Wishlist Icon */}
               <button
                 onClick={() => showToast("Added to your wishlist! ❤️")}
-                className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/90 border border-slate-200 flex items-center justify-center text-lg text-slate-400 hover:text-rose-500 hover:scale-110 shadow-sm transition cursor-pointer"
+                className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/95 border border-slate-200 flex items-center justify-center text-lg text-slate-400 hover:text-rose-500 hover:scale-110 shadow-sm transition cursor-pointer"
                 title="Wishlist"
               >
                 ♥
               </button>
             </div>
 
-            {/* Flipkart-Style Action Buttons: ADD TO CART & BUY NOW */}
+            {/* Modern Gradient Action Buttons: ADD TO CART & BUY NOW */}
             <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={handleAddToCart}
                 disabled={addingToCart || isOutOfStock}
-                className={`w-full py-4 px-4 rounded-xl font-extrabold text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer ${
+                className={`w-full py-4 px-4 rounded-2xl font-extrabold text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer ${
                   isOutOfStock
                     ? "bg-slate-200 text-slate-400 cursor-not-allowed shadow-none"
-                    : "bg-[#ff9f00] hover:bg-[#f39700] text-white shadow-amber-500/30 active:scale-95"
+                    : "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-amber-500/30 active:scale-95"
                 }`}
               >
                 <span className="text-lg">🛒</span>
@@ -248,10 +264,10 @@ export default function ProductDetail() {
               <button
                 onClick={handleBuyNow}
                 disabled={buyingNow || isOutOfStock}
-                className={`w-full py-4 px-4 rounded-xl font-extrabold text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer ${
+                className={`w-full py-4 px-4 rounded-2xl font-extrabold text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer ${
                   isOutOfStock
                     ? "bg-slate-200 text-slate-400 cursor-not-allowed shadow-none"
-                    : "bg-[#fb641b] hover:bg-[#e85b17] text-white shadow-orange-500/30 active:scale-95"
+                    : "bg-gradient-to-r from-brand via-indigo-600 to-brand hover:from-brand-dark hover:to-indigo-700 text-white shadow-brand/30 active:scale-95"
                 }`}
               >
                 <span className="text-lg">⚡</span>
@@ -264,17 +280,17 @@ export default function ProductDetail() {
           <div className="lg:col-span-7 flex flex-col space-y-6">
             {/* Header: Title & Category */}
             <div>
-              <div className="inline-block rounded-md bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">
+              <div className="inline-block rounded-lg bg-indigo-50 border border-indigo-100 px-3 py-1 text-xs font-bold text-brand uppercase tracking-wider mb-2">
                 {categoryName}
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-snug">
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-snug">
                 {product.name}
               </h1>
 
               {/* Ratings Pill */}
-              <div className="mt-3 flex items-center gap-3">
-                <span className="inline-flex items-center gap-1 rounded-md bg-emerald-700 px-2.5 py-0.5 text-xs font-bold text-white shadow-sm">
-                  <span>4.3</span>
+              <div className="mt-3 flex flex-wrap items-center gap-3">
+                <span className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-2.5 py-0.5 text-xs font-bold text-white shadow-sm">
+                  <span>4.8</span>
                   <span>★</span>
                 </span>
                 <span className="text-xs font-medium text-slate-500">
@@ -282,33 +298,33 @@ export default function ProductDetail() {
                 </span>
                 <span className="text-slate-300">•</span>
                 <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1">
-                  <span>✓</span> Flipkart Assured Quality
+                  <span>✓</span> ShopCart Assured Quality
                 </span>
               </div>
             </div>
 
             {/* Price & Discounts Section */}
-            <div className="rounded-2xl bg-slate-50 p-4 border border-slate-200/80">
+            <div className="rounded-2xl bg-gradient-to-br from-slate-50 to-indigo-50/40 p-5 border border-slate-200/80">
               <span className="text-xs font-bold text-emerald-600 uppercase tracking-wider">
-                Special Price
+                Special Flagship Price
               </span>
               <div className="flex items-baseline gap-3 mt-1">
-                <span className="text-3xl sm:text-4xl font-extrabold text-slate-900">
+                <span className="text-3xl sm:text-4xl font-black text-slate-900">
                   ₹{Number(product.price).toLocaleString("en-IN")}
                 </span>
                 <span className="text-base text-slate-400 line-through">
                   ₹{originalPrice.toLocaleString("en-IN")}
                 </span>
-                <span className="text-sm font-bold text-emerald-600">
+                <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-extrabold text-emerald-700">
                   {discountPercent}% off
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 mt-1">
-                Inclusive of all taxes. Free shipping on all orders above ₹499.
+              <p className="text-[11px] text-slate-500 mt-1.5">
+                Inclusive of all taxes. Free Express shipping on all orders above ₹499.
               </p>
             </div>
 
-            {/* Available Bank & Promotional Offers (Flipkart Style) */}
+            {/* Available Bank & Promotional Offers */}
             <div className="space-y-2.5">
               <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
                 <span>🏷️</span> Available Offers
@@ -316,15 +332,15 @@ export default function ProductDetail() {
               <ul className="space-y-2 text-xs text-slate-700">
                 <li className="flex items-start gap-2">
                   <span className="text-emerald-600 font-bold shrink-0">🏷️ Bank Offer:</span>
-                  <span>5% Unlimited Cashback on Flipkart Axis Bank Credit Card.</span>
+                  <span>5% Unlimited Cashback on ShopCart VIP Credit & Debit Cards.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-emerald-600 font-bold shrink-0">🏷️ Special Price:</span>
-                  <span>Get extra ₹500 off (price inclusive of cashback/coupon).</span>
+                  <span>Get extra 10% off using UPIEXTRA on eligible checkout orders.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-emerald-600 font-bold shrink-0">🏷️ Partner Offer:</span>
-                  <span>Sign-up for Pay Later and get ₹500 Gift Card*.</span>
+                  <span>Sign-up for instant rewards and get ₹500 Flagship Gift Voucher*.</span>
                 </li>
               </ul>
             </div>

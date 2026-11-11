@@ -4,17 +4,17 @@ import { registerRequest, errorMessage } from "../api/auth";
 import AuthShell, { inputCls, btnCls } from "../components/AuthShell";
 
 function getPasswordStrength(pass) {
-  if (!pass) return { score: 0, label: "", color: "bg-slate-700", text: "text-slate-400" };
+  if (!pass) return { score: 0, label: "", color: "bg-slate-200", text: "text-slate-400" };
   let score = 0;
   if (pass.length >= 6) score++;
   if (pass.length >= 8) score++;
   if (/[0-9]/.test(pass)) score++;
   if (/[A-Z]/.test(pass) || /[^A-Za-z0-9]/.test(pass)) score++;
 
-  if (score <= 1) return { score: 1, label: "Weak", color: "bg-red-500", text: "text-red-400" };
-  if (score === 2) return { score: 2, label: "Fair", color: "bg-amber-500", text: "text-amber-400" };
-  if (score === 3) return { score: 3, label: "Good", color: "bg-indigo-500", text: "text-indigo-400" };
-  return { score: 4, label: "Strong", color: "bg-emerald-500", text: "text-emerald-400" };
+  if (score <= 1) return { score: 1, label: "Weak", color: "bg-red-500", text: "text-red-600" };
+  if (score === 2) return { score: 2, label: "Fair", color: "bg-amber-500", text: "text-amber-600" };
+  if (score === 3) return { score: 3, label: "Good", color: "bg-indigo-500", text: "text-indigo-600" };
+  return { score: 4, label: "Strong", color: "bg-emerald-500", text: "text-emerald-600" };
 }
 
 export default function Register() {
@@ -60,17 +60,17 @@ export default function Register() {
   return (
     <AuthShell
       title="Create account"
-      subtitle="Join ShopCart to enjoy personalized recommendations & instant discounts."
+      subtitle="Join ShopCart to enjoy personalized offers & express checkout."
       badge="Fast VIP Sign Up"
     >
       <form onSubmit={onSubmit} className="space-y-4">
         {/* Full Name */}
         <div>
-          <label className="mb-1.5 block text-xs font-semibold text-slate-300">
+          <label className="mb-1.5 block text-xs font-semibold text-slate-700">
             Full Name
           </label>
           <div className="relative group">
-            <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 group-focus-within:text-indigo-400 transition-colors">
+            <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 group-focus-within:text-brand transition-colors">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -87,7 +87,7 @@ export default function Register() {
               </svg>
             </span>
             <input
-              className={`${inputCls} pl-10 pr-4`}
+              className={`${inputCls} pl-10 pr-4 py-2.5`}
               placeholder="e.g. Aasif Khan"
               required
               minLength={2}
@@ -99,11 +99,11 @@ export default function Register() {
 
         {/* Email Address */}
         <div>
-          <label className="mb-1.5 block text-xs font-semibold text-slate-300">
+          <label className="mb-1.5 block text-xs font-semibold text-slate-700">
             Email Address
           </label>
           <div className="relative group">
-            <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 group-focus-within:text-indigo-400 transition-colors">
+            <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 group-focus-within:text-brand transition-colors">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -120,7 +120,7 @@ export default function Register() {
               </svg>
             </span>
             <input
-              className={`${inputCls} pl-10 pr-4`}
+              className={`${inputCls} pl-10 pr-4 py-2.5`}
               type="email"
               placeholder="name@example.com"
               required
@@ -133,14 +133,14 @@ export default function Register() {
         {/* Password */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <label className="block text-xs font-semibold text-slate-300">
+            <label className="block text-xs font-semibold text-slate-700">
               Password
             </label>
-            <span className="text-[10px] text-slate-400">Min. 8 characters</span>
+            <span className="text-[10px] font-medium text-slate-400">Min. 8 characters</span>
           </div>
 
           <div className="relative group">
-            <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 group-focus-within:text-indigo-400 transition-colors">
+            <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 group-focus-within:text-brand transition-colors">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -158,7 +158,7 @@ export default function Register() {
             </span>
 
             <input
-              className={`${inputCls} pl-10 pr-11`}
+              className={`${inputCls} pl-10 pr-11 py-2.5`}
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"
               required
@@ -170,7 +170,7 @@ export default function Register() {
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-white transition-colors focus:outline-none"
+              className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-slate-700 transition-colors focus:outline-none cursor-pointer"
               aria-label={showPassword ? "Hide password" : "Show password"}
               title={showPassword ? "Hide password" : "Show password"}
             >
@@ -215,9 +215,9 @@ export default function Register() {
 
           {/* Password strength meter */}
           {form.password && (
-            <div className="mt-2 space-y-1 animate-fadeIn">
+            <div className="mt-2 space-y-1">
               <div className="flex items-center justify-between text-[10px]">
-                <span className="text-slate-400">Password strength:</span>
+                <span className="text-slate-500">Password strength:</span>
                 <span className={`font-bold ${pwdStrength.text}`}>{pwdStrength.label}</span>
               </div>
               <div className="grid grid-cols-4 gap-1.5 h-1">
@@ -225,7 +225,7 @@ export default function Register() {
                   <div
                     key={step}
                     className={`h-full rounded-full transition-all duration-300 ${
-                      step <= pwdStrength.score ? pwdStrength.color : "bg-slate-800"
+                      step <= pwdStrength.score ? pwdStrength.color : "bg-slate-200"
                     }`}
                   />
                 ))}
@@ -235,34 +235,34 @@ export default function Register() {
         </div>
 
         {/* Terms agreement */}
-        <div className="pt-1">
-          <label className="flex items-start gap-2.5 text-xs text-slate-300 cursor-pointer select-none">
+        <div className="pt-0.5">
+          <label className="flex items-start gap-2.5 text-xs text-slate-600 cursor-pointer select-none">
             <input
               type="checkbox"
               checked={agreed}
               onChange={(e) => setAgreed(e.target.checked)}
-              className="mt-0.5 h-4 w-4 rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-indigo-500/30 accent-indigo-600 shrink-0"
+              className="mt-0.5 h-4 w-4 rounded border-slate-300 text-brand focus:ring-brand/30 accent-brand shrink-0"
             />
-            <span className="text-slate-400 text-[11px] leading-tight">
+            <span className="text-slate-500 text-[11px] leading-tight">
               I agree to the{" "}
-              <span className="text-indigo-400 hover:underline">Terms of Service</span> and{" "}
-              <span className="text-indigo-400 hover:underline">Privacy Policy</span>.
+              <span className="text-brand font-medium hover:underline">Terms of Service</span> and{" "}
+              <span className="text-brand font-medium hover:underline">Privacy Policy</span>.
             </span>
           </label>
         </div>
 
         {/* Error message */}
         {error && (
-          <div className="rounded-xl bg-red-950/70 border border-red-500/40 p-3 text-xs text-red-200 flex items-center gap-2.5">
-            <span className="text-base text-red-400">⚠️</span>
+          <div className="rounded-xl bg-red-50 border border-red-200 p-3 text-xs text-red-700 flex items-center gap-2.5">
+            <span className="text-base">⚠️</span>
             <span>{error}</span>
           </div>
         )}
 
         {/* Success message */}
         {success && (
-          <div className="rounded-xl bg-emerald-950/70 border border-emerald-500/40 p-3 text-xs text-emerald-200 flex items-center gap-2.5">
-            <span className="text-base text-emerald-400">✅</span>
+          <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-3 text-xs text-emerald-700 flex items-center gap-2.5">
+            <span className="text-base">✅</span>
             <span>{success}</span>
           </div>
         )}
@@ -303,18 +303,18 @@ export default function Register() {
       </form>
 
       {/* Switch to Login link */}
-      <p className="mt-5 text-center text-xs text-slate-400">
+      <p className="mt-5 text-center text-xs text-slate-600">
         Already have an account?{" "}
         <Link
           to="/login"
-          className="font-bold text-indigo-400 hover:text-indigo-300 underline underline-offset-2 transition"
+          className="font-bold text-brand hover:text-brand-dark underline underline-offset-2 transition"
         >
           Sign in here
         </Link>
       </p>
 
       {/* Trust & Security Badge */}
-      <div className="mt-5 flex items-center justify-center gap-2 text-[10px] text-slate-500 pt-3 border-t border-slate-800/60">
+      <div className="mt-4 flex items-center justify-center gap-2 text-[10px] text-slate-400 pt-3 border-t border-slate-200/70">
         <span>🛡️ 100% Free Signup</span>
         <span>•</span>
         <span>No Credit Card Required</span>

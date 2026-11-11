@@ -1,14 +1,18 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { getAddresses, createAddress } from "../api/addresses";
 import { createOrder } from "../api/orders";
 import { getAssetUrl } from "../api/axios";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import PurchaseHeader from "../components/PurchaseHeader";
+
+const fieldCls =
+  "w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 outline-none transition focus:border-brand focus:ring-3 focus:ring-brand/15";
 
 export default function Checkout() {
   const { cart, fetchCart } = useCart();
-  const navigate = useNavigate();
 
   const [addresses, setAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
@@ -38,14 +42,13 @@ export default function Checkout() {
     try {
       const data = await getAddresses();
       setAddresses(data);
-      // Select default address if present, or first address
       const def = data.find((a) => a.is_default) || data[0];
       if (def) {
         setSelectedAddressId(def.id);
       } else {
-        setShowAddressForm(true); // If no address, open the form directly
+        setShowAddressForm(true);
       }
-    } catch (err) {
+    } catch {
       setError("Failed to load delivery addresses.");
     } finally {
       setLoadingAddresses(false);
@@ -98,7 +101,7 @@ export default function Checkout() {
     setPlacingOrder(true);
     try {
       const order = await createOrder(selectedAddressId);
-      await fetchCart(); // Refresh cart (which backend clears)
+      await fetchCart();
       setOrderSuccess(order);
     } catch (err) {
       setError(
@@ -113,74 +116,88 @@ export default function Checkout() {
 
   if (orderSuccess) {
     return (
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-slate-50 flex flex-col">
         <Navbar />
-        <main className="mx-auto max-w-2xl px-4 py-16 text-center">
-          <div className="rounded-2xl border border-emerald-200 bg-white p-8 shadow-sm">
-            <span className="text-6xl block mb-4">🎉</span>
-            <h1 className="text-2xl font-bold text-slate-900">
+        <PurchaseHeader
+          badge="Order Confirmed"
+          title="Thank You For Shopping!"
+          subtitle={`Order #${orderSuccess.id} has been received and is being prepared for dispatch.`}
+          step={3}
+        />
+        <main className="mx-auto max-w-2xl px-4 py-12 text-center flex-1 w-full">
+          <div className="rounded-3xl border border-emerald-200/80 bg-white p-8 sm:p-10 shadow-xl shadow-emerald-500/10">
+            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-3xl bg-emerald-50 text-5xl">
+              🎉
+            </div>
+            <h2 className="text-2xl font-black text-slate-900">
               Order Placed Successfully!
-            </h1>
+            </h2>
             <p className="mt-2 text-sm text-slate-600">
-              Thank you for your purchase. Your order <strong>#{orderSuccess.id}</strong> has been registered.
+              Your order <strong className="text-slate-900">#{orderSuccess.id}</strong> is confirmed and will ship soon.
             </p>
 
-            <div className="mt-6 rounded-xl bg-slate-50 p-4 text-left text-xs text-slate-600 border border-slate-200 space-y-1.5">
+            <div className="mt-6 rounded-2xl bg-slate-50 p-5 text-left text-xs text-slate-600 border border-slate-200/80 space-y-2">
               <p>
-                <strong>Recipient:</strong> {orderSuccess.delivery_address?.recipient_name} ({orderSuccess.delivery_address?.phone})
+                <strong className="text-slate-800">Recipient:</strong>{" "}
+                {orderSuccess.delivery_address?.recipient_name} ({orderSuccess.delivery_address?.phone})
               </p>
               <p>
-                <strong>Delivery To:</strong> {orderSuccess.delivery_address?.address_line1},{" "}
-                {orderSuccess.delivery_address?.city}, {orderSuccess.delivery_address?.state} - {orderSuccess.delivery_address?.postal_code}
+                <strong className="text-slate-800">Delivery To:</strong>{" "}
+                {orderSuccess.delivery_address?.address_line1},{" "}
+                {orderSuccess.delivery_address?.city}, {orderSuccess.delivery_address?.state} -{" "}
+                {orderSuccess.delivery_address?.postal_code}
               </p>
               <p>
-                <strong>Total Amount:</strong> ₹{Number(orderSuccess.total_amount).toLocaleString("en-IN")}
+                <strong className="text-slate-800">Total Amount:</strong>{" "}
+                <span className="font-bold text-slate-900">
+                  ₹{Number(orderSuccess.total_amount).toLocaleString("en-IN")}
+                </span>
               </p>
               <p>
-                <strong>Status:</strong>{" "}
-                <span className="inline-block rounded bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800">
+                <strong className="text-slate-800">Status:</strong>{" "}
+                <span className="inline-block rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-bold text-amber-800">
                   {orderSuccess.status}
                 </span>
               </p>
             </div>
 
-            <div className="mt-8 flex justify-center gap-3">
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link
                 to="/orders"
-                className="rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark transition shadow-sm"
+                className="rounded-2xl bg-gradient-to-r from-brand to-indigo-600 px-6 py-3 text-sm font-bold text-white hover:from-brand-dark hover:to-indigo-700 transition shadow-lg shadow-brand/25"
               >
-                View My Orders
+                Track My Orders →
               </Link>
               <Link
                 to="/"
-                className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
+                className="rounded-2xl border border-slate-200 bg-slate-50 px-6 py-3 text-sm font-bold text-slate-700 hover:bg-slate-100 transition"
               >
                 Continue Shopping
               </Link>
             </div>
           </div>
         </main>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
       <Navbar />
 
-      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-            Checkout
-          </h1>
-          <p className="text-sm text-slate-500">
-            Select delivery address and confirm your order.
-          </p>
-        </div>
+      <PurchaseHeader
+        badge="Secure Flagship Checkout"
+        title="Checkout & Delivery"
+        subtitle="Select your delivery address and review your order summary before confirming."
+        step={2}
+      />
 
+      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 flex-1 w-full">
         {error && (
-          <div className="mb-6 rounded-md bg-red-50 p-3 text-xs text-red-700 border border-red-200">
-            {error}
+          <div className="mb-6 rounded-xl bg-red-50 p-3.5 text-xs font-medium text-red-700 border border-red-200 flex items-center gap-2">
+            <span>⚠️</span>
+            <span>{error}</span>
           </div>
         )}
 
@@ -188,15 +205,18 @@ export default function Checkout() {
           {/* Left Column: Address Selection & Payment */}
           <div className="space-y-6 lg:col-span-2">
             {/* Step 1: Address */}
-            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <span>📍</span> 1. Delivery Address
+                <h2 className="text-base font-black text-slate-900 flex items-center gap-2">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-indigo-50 text-sm">
+                    📍
+                  </span>
+                  <span>1. Delivery Address</span>
                 </h2>
                 {!showAddressForm && (
                   <button
                     onClick={() => setShowAddressForm(true)}
-                    className="text-xs font-semibold text-brand hover:underline cursor-pointer"
+                    className="rounded-xl bg-indigo-50 px-3 py-1.5 text-xs font-bold text-brand hover:bg-indigo-100 transition cursor-pointer"
                   >
                     + Add New Address
                   </button>
@@ -204,16 +224,16 @@ export default function Checkout() {
               </div>
 
               {loadingAddresses ? (
-                <div className="h-24 animate-pulse rounded bg-slate-100" />
+                <div className="h-24 animate-pulse rounded-2xl bg-slate-100" />
               ) : (
                 <div className="space-y-3">
                   {addresses.map((addr) => (
                     <label
                       key={addr.id}
-                      className={`block cursor-pointer rounded-lg border p-4 transition ${
+                      className={`block cursor-pointer rounded-2xl border p-4 transition ${
                         selectedAddressId === addr.id
-                          ? "border-brand bg-brand/5 ring-2 ring-brand/20"
-                          : "border-slate-200 hover:border-slate-300"
+                          ? "border-brand bg-indigo-50/40 ring-2 ring-brand/20"
+                          : "border-slate-200 hover:border-slate-300 bg-white"
                       }`}
                     >
                       <div className="flex items-start gap-3">
@@ -222,16 +242,16 @@ export default function Checkout() {
                           name="address"
                           checked={selectedAddressId === addr.id}
                           onChange={() => setSelectedAddressId(addr.id)}
-                          className="mt-1 text-brand focus:ring-brand"
+                          className="mt-1 accent-brand"
                         />
                         <div className="flex-1 text-sm">
-                          <div className="flex items-center gap-2 font-semibold text-slate-900">
+                          <div className="flex items-center gap-2 font-bold text-slate-900">
                             <span>{addr.recipient_name}</span>
-                            <span className="text-xs text-slate-500 font-normal">
+                            <span className="text-xs text-slate-500 font-medium">
                               ({addr.phone})
                             </span>
                             {addr.is_default && (
-                              <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-600">
+                              <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-bold text-brand">
                                 Default
                               </span>
                             )}
@@ -248,24 +268,24 @@ export default function Checkout() {
                 </div>
               )}
 
-              {/* Add New Address Form Modal/Inline */}
+              {/* Add New Address Form */}
               {showAddressForm && (
                 <form
                   onSubmit={handleAddAddress}
-                  className="mt-4 rounded-xl border border-slate-200 bg-slate-50/50 p-4 space-y-3"
+                  className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-5 space-y-3"
                 >
-                  <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                    Add New Address
+                  <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider">
+                    Add New Delivery Address
                   </h3>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                     <div>
-                      <label className="block text-slate-600 mb-1 font-medium">
+                      <label className="block text-slate-600 mb-1 font-semibold">
                         Recipient Name *
                       </label>
                       <input
                         required
-                        className="w-full rounded border border-slate-300 bg-white px-3 py-1.5 outline-none focus:border-brand"
+                        className={fieldCls}
                         value={newAddress.recipient_name}
                         onChange={(e) =>
                           setNewAddress({ ...newAddress, recipient_name: e.target.value })
@@ -275,14 +295,14 @@ export default function Checkout() {
                     </div>
 
                     <div>
-                      <label className="block text-slate-600 mb-1 font-medium">
+                      <label className="block text-slate-600 mb-1 font-semibold">
                         Phone Number (10 digits) *
                       </label>
                       <input
                         required
                         minLength={10}
                         maxLength={15}
-                        className="w-full rounded border border-slate-300 bg-white px-3 py-1.5 outline-none focus:border-brand"
+                        className={fieldCls}
                         value={newAddress.phone}
                         onChange={(e) =>
                           setNewAddress({ ...newAddress, phone: e.target.value })
@@ -293,12 +313,12 @@ export default function Checkout() {
                   </div>
 
                   <div className="text-xs">
-                    <label className="block text-slate-600 mb-1 font-medium">
+                    <label className="block text-slate-600 mb-1 font-semibold">
                       Address Line 1 *
                     </label>
                     <input
                       required
-                      className="w-full rounded border border-slate-300 bg-white px-3 py-1.5 outline-none focus:border-brand"
+                      className={fieldCls}
                       value={newAddress.address_line1}
                       onChange={(e) =>
                         setNewAddress({ ...newAddress, address_line1: e.target.value })
@@ -308,11 +328,11 @@ export default function Checkout() {
                   </div>
 
                   <div className="text-xs">
-                    <label className="block text-slate-600 mb-1 font-medium">
+                    <label className="block text-slate-600 mb-1 font-semibold">
                       Address Line 2 (Optional)
                     </label>
                     <input
-                      className="w-full rounded border border-slate-300 bg-white px-3 py-1.5 outline-none focus:border-brand"
+                      className={fieldCls}
                       value={newAddress.address_line2}
                       onChange={(e) =>
                         setNewAddress({ ...newAddress, address_line2: e.target.value })
@@ -321,12 +341,12 @@ export default function Checkout() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-3 gap-3 text-xs">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                     <div>
-                      <label className="block text-slate-600 mb-1 font-medium">City *</label>
+                      <label className="block text-slate-600 mb-1 font-semibold">City *</label>
                       <input
                         required
-                        className="w-full rounded border border-slate-300 bg-white px-3 py-1.5 outline-none focus:border-brand"
+                        className={fieldCls}
                         value={newAddress.city}
                         onChange={(e) =>
                           setNewAddress({ ...newAddress, city: e.target.value })
@@ -335,10 +355,10 @@ export default function Checkout() {
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-600 mb-1 font-medium">State *</label>
+                      <label className="block text-slate-600 mb-1 font-semibold">State *</label>
                       <input
                         required
-                        className="w-full rounded border border-slate-300 bg-white px-3 py-1.5 outline-none focus:border-brand"
+                        className={fieldCls}
                         value={newAddress.state}
                         onChange={(e) =>
                           setNewAddress({ ...newAddress, state: e.target.value })
@@ -347,10 +367,10 @@ export default function Checkout() {
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-600 mb-1 font-medium">Postal Code *</label>
+                      <label className="block text-slate-600 mb-1 font-semibold">Postal Code *</label>
                       <input
                         required
-                        className="w-full rounded border border-slate-300 bg-white px-3 py-1.5 outline-none focus:border-brand"
+                        className={fieldCls}
                         value={newAddress.postal_code}
                         onChange={(e) =>
                           setNewAddress({ ...newAddress, postal_code: e.target.value })
@@ -368,8 +388,9 @@ export default function Checkout() {
                       onChange={(e) =>
                         setNewAddress({ ...newAddress, is_default: e.target.checked })
                       }
+                      className="accent-brand"
                     />
-                    <label htmlFor="is_default" className="text-slate-700">
+                    <label htmlFor="is_default" className="text-slate-700 font-medium">
                       Set as default delivery address
                     </label>
                   </div>
@@ -379,7 +400,7 @@ export default function Checkout() {
                       <button
                         type="button"
                         onClick={() => setShowAddressForm(false)}
-                        className="rounded border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+                        className="rounded-xl border border-slate-300 bg-white px-4 py-1.5 text-xs font-bold text-slate-600 hover:bg-slate-50 cursor-pointer"
                       >
                         Cancel
                       </button>
@@ -387,7 +408,7 @@ export default function Checkout() {
                     <button
                       type="submit"
                       disabled={savingAddress}
-                      className="rounded bg-brand px-4 py-1 text-xs font-semibold text-white hover:bg-brand-dark disabled:opacity-50"
+                      className="rounded-xl bg-brand px-5 py-1.5 text-xs font-bold text-white hover:bg-brand-dark disabled:opacity-50 cursor-pointer"
                     >
                       {savingAddress ? "Saving..." : "Save Address"}
                     </button>
@@ -397,18 +418,21 @@ export default function Checkout() {
             </div>
 
             {/* Step 2: Payment Method */}
-            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-              <h2 className="text-base font-bold text-slate-900 flex items-center gap-2 mb-3">
-                <span>💳</span> 2. Payment Method
+            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm">
+              <h2 className="text-base font-black text-slate-900 flex items-center gap-2 mb-4">
+                <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-indigo-50 text-sm">
+                  💳
+                </span>
+                <span>2. Payment Method</span>
               </h2>
-              <div className="rounded-lg border border-brand bg-brand/5 p-4 flex items-center gap-3">
-                <input type="radio" checked readOnly className="text-brand focus:ring-brand" />
+              <div className="rounded-2xl border border-brand bg-indigo-50/40 p-4 flex items-center gap-3 ring-2 ring-brand/15">
+                <input type="radio" checked readOnly className="accent-brand" />
                 <div>
-                  <p className="text-sm font-semibold text-slate-900">
-                    Cash on Delivery (Pay on Delivery)
+                  <p className="text-sm font-bold text-slate-900">
+                    Cash / UPI on Delivery (Pay at Doorstep)
                   </p>
-                  <p className="text-xs text-slate-500">
-                    Pay securely in cash or via UPI upon delivery.
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Pay conveniently with Cash or scan UPI QR when your package arrives.
                   </p>
                 </div>
               </div>
@@ -417,37 +441,53 @@ export default function Checkout() {
 
           {/* Right Column: Order Summary */}
           <div className="lg:col-span-1">
-            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm sticky top-24">
-              <h2 className="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-3">
+            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-xl shadow-slate-200/40 sticky top-24">
+              <h2 className="text-base font-black text-slate-900 mb-4 border-b border-slate-100 pb-3">
                 Order Review
               </h2>
 
-              <div className="divide-y divide-slate-100 max-h-60 overflow-y-auto mb-4">
-                {items.map((item) => (
-                  <div key={item.cart_item_id} className="py-2.5 flex items-center justify-between text-xs">
-                    <div>
-                      <p className="font-semibold text-slate-800">{item.product_name}</p>
-                      <p className="text-slate-400">Qty: {item.quantity} × ₹{Number(item.price).toLocaleString("en-IN")}</p>
+              <div className="divide-y divide-slate-100 max-h-64 overflow-y-auto mb-4">
+                {items.map((item) => {
+                  const thumb = item.image_url ? getAssetUrl(item.image_url) : null;
+                  return (
+                    <div key={item.cart_item_id} className="py-3 flex items-center justify-between gap-3 text-xs">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="h-10 w-10 shrink-0 rounded-xl bg-slate-100 border border-slate-200/70 overflow-hidden flex items-center justify-center">
+                          {thumb ? (
+                            <img src={thumb} alt={item.product_name} className="h-full w-full object-cover" />
+                          ) : (
+                            <span>📦</span>
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-bold text-slate-800 truncate">{item.product_name}</p>
+                          <p className="text-slate-400">
+                            Qty: {item.quantity} × ₹{Number(item.price).toLocaleString("en-IN")}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="font-extrabold text-slate-900 shrink-0">
+                        ₹{Number(item.subtotal).toLocaleString("en-IN")}
+                      </span>
                     </div>
-                    <span className="font-bold text-slate-900">
-                      ₹{Number(item.subtotal).toLocaleString("en-IN")}
-                    </span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
-              <div className="space-y-2 border-t border-slate-200 pt-3 text-xs">
+              <div className="space-y-2.5 border-t border-slate-200 pt-3 text-xs">
                 <div className="flex justify-between text-slate-600">
                   <span>Subtotal</span>
-                  <span>₹{Number(cart.total_amount).toLocaleString("en-IN")}</span>
+                  <span className="font-semibold text-slate-800">
+                    ₹{Number(cart.total_amount).toLocaleString("en-IN")}
+                  </span>
                 </div>
                 <div className="flex justify-between text-slate-600">
-                  <span>Delivery</span>
-                  <span className="font-semibold text-emerald-600">FREE</span>
+                  <span>Express Delivery</span>
+                  <span className="font-bold text-emerald-600">FREE</span>
                 </div>
-                <div className="border-t border-slate-100 pt-2 flex justify-between text-sm font-bold text-slate-900">
+                <div className="border-t border-slate-100 pt-2.5 flex justify-between items-baseline text-sm font-bold text-slate-900">
                   <span>Total Payable</span>
-                  <span className="text-base font-extrabold text-brand">
+                  <span className="text-xl font-black text-brand">
                     ₹{Number(cart.total_amount).toLocaleString("en-IN")}
                   </span>
                 </div>
@@ -456,19 +496,48 @@ export default function Checkout() {
               <button
                 onClick={handlePlaceOrder}
                 disabled={placingOrder || !selectedAddressId || items.length === 0}
-                className="mt-6 w-full rounded-lg bg-emerald-600 py-3 text-center text-sm font-bold text-white hover:bg-emerald-700 transition shadow-md disabled:opacity-50 cursor-pointer"
+                className="mt-6 w-full flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 py-3.5 text-center text-sm font-bold text-white hover:from-emerald-700 hover:to-teal-700 transition shadow-lg shadow-emerald-600/25 disabled:opacity-50 cursor-pointer active:scale-[0.99]"
               >
-                {placingOrder ? "Placing Order..." : "Confirm & Place Order"}
+                {placingOrder ? (
+                  <>
+                    <svg
+                      className="h-4 w-4 animate-spin text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v8H4z"
+                      ></path>
+                    </svg>
+                    <span>Placing Order...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Confirm & Place Order</span>
+                    <span>✓</span>
+                  </>
+                )}
               </button>
 
-              <p className="mt-3 text-center text-xs text-slate-400">
-                By placing the order you agree to the terms.
+              <p className="mt-3 text-center text-[11px] text-slate-400">
+                🔒 100% Buyer Protection • Encrypted Order Flow
               </p>
             </div>
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
-

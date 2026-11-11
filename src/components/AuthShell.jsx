@@ -1,143 +1,124 @@
 import { Link } from "react-router-dom";
+import storeBg from "../assets/store-bg.jpg";
 
 export default function AuthShell({
   title,
   subtitle,
-  badge = "ShopCart Security",
+  badge = "ShopCart Member Access",
   children,
 }) {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between relative overflow-hidden selection:bg-brand selection:text-white">
-      {/* Background ambient glowing gradient orbs */}
-      <div className="absolute -top-32 -left-32 h-[450px] w-[450px] rounded-full bg-gradient-to-tr from-indigo-600/25 via-blue-600/20 to-transparent blur-3xl pointer-events-none" />
-      <div className="absolute top-1/3 -right-32 h-[500px] w-[500px] rounded-full bg-gradient-to-bl from-brand/25 via-violet-600/20 to-transparent blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-32 left-1/4 h-[400px] w-[400px] rounded-full bg-gradient-to-t from-sky-600/15 via-indigo-600/15 to-transparent blur-3xl pointer-events-none" />
+    <div className="min-h-screen relative flex flex-col justify-between overflow-hidden bg-slate-900 selection:bg-brand selection:text-white">
+      {/* Full-Screen Bright Luxury Store Interior Photo */}
+      <img
+        src={storeBg}
+        alt="ShopCart Flagship Store Interior"
+        className="absolute inset-0 h-full w-full object-cover object-center"
+      />
 
-      {/* Decorative Grid Pattern Overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b12_1px,transparent_1px),linear-gradient(to_bottom,#1e293b12_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
+      {/* Light Editorial Gradient Scrim (keeps store interior clearly visible while ensuring crisp text contrast) */}
+      <div className="absolute inset-0 bg-gradient-to-r from-slate-950/65 via-slate-950/20 to-slate-950/30" />
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-slate-950/35" />
 
-      {/* Main Wrapper */}
+      {/* Main Container */}
       <div className="relative z-10 mx-auto w-full max-w-7xl flex-1 flex flex-col p-4 sm:p-6 lg:p-8">
-        {/* Top Navigation */}
-        <header className="flex items-center justify-between pb-6 sm:pb-8">
+        {/* Top Floating Glass Navigation */}
+        <header className="flex items-center justify-between pb-4 sm:pb-6">
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-brand to-indigo-500 text-2xl text-white shadow-lg shadow-brand/30 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-brand to-indigo-500 text-2xl text-white shadow-lg shadow-black/25 ring-1 ring-white/30 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
               🛍️
             </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-black tracking-tight text-white group-hover:text-indigo-300 transition">
-                Shop<span className="text-indigo-400">Cart</span>
+            <div className="flex flex-col drop-shadow-md">
+              <span className="text-xl font-black tracking-tight text-white">
+                Shop<span className="text-indigo-300">Cart</span>
               </span>
-              <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase -mt-0.5">
-                Premium Store
+              <span className="text-[10px] font-bold text-white/80 tracking-wider uppercase -mt-0.5">
+                Flagship Store
               </span>
             </div>
           </Link>
 
           <Link
             to="/"
-            className="flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/80 px-4 py-2 text-xs font-semibold text-slate-300 backdrop-blur-md transition-all duration-200 hover:border-slate-600 hover:bg-slate-800 hover:text-white shadow-sm"
+            className="flex items-center gap-2 rounded-full border border-white/30 bg-slate-950/35 px-4 py-2 text-xs font-semibold text-white backdrop-blur-md transition-all duration-200 hover:bg-white hover:text-slate-900 shadow-lg"
           >
             <span>←</span>
             <span>Back to Store</span>
           </Link>
         </header>
 
-        {/* Center Content: Split Grid */}
-        <div className="my-auto grid items-center gap-8 lg:grid-cols-12 lg:gap-14 py-4">
-          {/* Left Hero Showcase (visible on lg+) */}
-          <div className="hidden lg:col-span-6 lg:flex flex-col justify-center pr-4">
-            <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3.5 py-1.5 text-xs font-semibold text-indigo-300 backdrop-blur-md mb-6 w-fit shadow-xs">
-              <span className="flex h-2 w-2 rounded-full bg-indigo-400 animate-ping"></span>
-              India's Preferred Shopping Destination
+        {/* Center Content: Airy Split Layout letting the store photo shine */}
+        <div className="my-auto grid items-center gap-8 lg:grid-cols-12 lg:gap-12 py-4">
+          {/* Left Editorial Showcase (minimal & open so store shelves & displays remain visible) */}
+          <div className="hidden lg:col-span-6 lg:flex flex-col justify-end pt-16 pr-6">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-slate-950/40 px-3.5 py-1.5 text-xs font-semibold text-amber-200 backdrop-blur-md mb-5 w-fit shadow-md">
+              <span className="flex h-2 w-2 rounded-full bg-amber-400 animate-ping" />
+              Welcome to our Flagship Store
             </div>
 
-            <h1 className="text-4xl xl:text-5xl font-black tracking-tight text-white leading-[1.15]">
-              Shop Smarter. <br />
-              <span className="bg-gradient-to-r from-indigo-300 via-sky-300 to-indigo-500 text-transparent bg-clip-text">
-                Live Better.
-              </span>
+            <h1 className="text-4xl xl:text-5xl font-black tracking-tight text-white leading-[1.12] drop-shadow-[0_4px_20px_rgba(0,0,0,0.45)]">
+              Where Style Meets <br />
+              <span className="text-amber-200">Everyday Luxury.</span>
             </h1>
 
-            <p className="mt-4 text-sm text-slate-400 max-w-md leading-relaxed">
-              Log in to access your synchronized cart, order history, lightning-fast checkout, and exclusive VIP member flash sales.
+            <p className="mt-4 text-sm text-white/90 max-w-md leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
+              Curated sneakers, watches, headphones, and apparel—handpicked and delivered straight from our boutique to your doorstep.
             </p>
 
-            {/* Feature Cards Grid */}
-            <div className="mt-8 grid grid-cols-2 gap-3.5 max-w-lg">
-              <div className="group rounded-2xl border border-slate-800/80 bg-slate-900/50 p-4 backdrop-blur-md transition-all duration-200 hover:border-indigo-500/40 hover:bg-slate-900/80 hover:translate-y-[-2px]">
-                <div className="text-2xl mb-2 transition-transform group-hover:scale-110">⚡</div>
-                <h4 className="text-xs font-bold text-white uppercase tracking-wider">Fast Delivery</h4>
-                <p className="mt-1 text-xs text-slate-400">Express doorstep dispatch in under 24-48 hrs.</p>
-              </div>
-
-              <div className="group rounded-2xl border border-slate-800/80 bg-slate-900/50 p-4 backdrop-blur-md transition-all duration-200 hover:border-indigo-500/40 hover:bg-slate-900/80 hover:translate-y-[-2px]">
-                <div className="text-2xl mb-2 transition-transform group-hover:scale-110">🛡️</div>
-                <h4 className="text-xs font-bold text-white uppercase tracking-wider">100% Genuine</h4>
-                <p className="mt-1 text-xs text-slate-400">Directly sourced authentic quality products.</p>
-              </div>
-
-              <div className="group rounded-2xl border border-slate-800/80 bg-slate-900/50 p-4 backdrop-blur-md transition-all duration-200 hover:border-indigo-500/40 hover:bg-slate-900/80 hover:translate-y-[-2px]">
-                <div className="text-2xl mb-2 transition-transform group-hover:scale-110">🏷️</div>
-                <h4 className="text-xs font-bold text-white uppercase tracking-wider">Members VIP Deals</h4>
-                <p className="mt-1 text-xs text-slate-400">Save up to 40% with members-only discounts.</p>
-              </div>
-
-              <div className="group rounded-2xl border border-slate-800/80 bg-slate-900/50 p-4 backdrop-blur-md transition-all duration-200 hover:border-indigo-500/40 hover:bg-slate-900/80 hover:translate-y-[-2px]">
-                <div className="text-2xl mb-2 transition-transform group-hover:scale-110">💳</div>
-                <h4 className="text-xs font-bold text-white uppercase tracking-wider">Safe Checkout</h4>
-                <p className="mt-1 text-xs text-slate-400">256-bit SSL encrypted zero-risk payments.</p>
-              </div>
+            {/* Compact Highlight Chips */}
+            <div className="mt-6 flex flex-wrap gap-2.5">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-slate-950/40 px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur-md shadow-sm">
+                <span>⚡</span> 24h Express Delivery
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-slate-950/40 px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur-md shadow-sm">
+                <span>🛡️</span> 100% Authentic
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-slate-950/40 px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur-md shadow-sm">
+                <span>🏷️</span> Member Drops
+              </span>
             </div>
 
-            {/* Social Proof Pill */}
-            <div className="mt-8 flex items-center gap-4 rounded-2xl border border-slate-800/80 bg-slate-900/60 p-3.5 backdrop-blur-md max-w-md">
+            {/* Compact Social Proof Pill */}
+            <div className="mt-6 inline-flex items-center gap-3.5 rounded-2xl border border-white/25 bg-slate-950/45 px-4 py-3 backdrop-blur-md w-fit shadow-xl">
               <div className="flex -space-x-2">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-rose-500 to-amber-500 text-xs font-bold text-white ring-2 ring-slate-950">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-tr from-rose-500 to-amber-500 text-[11px] font-bold text-white ring-2 ring-white/30">
                   AR
                 </div>
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-500 to-sky-500 text-xs font-bold text-white ring-2 ring-slate-950">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-500 to-sky-500 text-[11px] font-bold text-white ring-2 ring-white/30">
                   SK
                 </div>
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 text-xs font-bold text-white ring-2 ring-slate-950">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 text-[11px] font-bold text-white ring-2 ring-white/30">
                   VP
-                </div>
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand text-xs font-bold text-white ring-2 ring-slate-950">
-                  +50k
                 </div>
               </div>
               <div className="flex flex-col">
-                <div className="flex items-center gap-1 text-amber-400 text-xs">
-                  <span>★</span>
-                  <span>★</span>
-                  <span>★</span>
-                  <span>★</span>
-                  <span>★</span>
-                  <span className="ml-1 text-xs font-bold text-white">4.9/5</span>
+                <div className="flex items-center gap-1 text-amber-300 text-xs leading-none">
+                  <span>★★★★★</span>
+                  <span className="ml-1 font-bold text-white">4.9/5</span>
                 </div>
-                <span className="text-[11px] text-slate-400">
-                  Trusted by 50,000+ verified shoppers nationwide
+                <span className="mt-1 text-[11px] text-white/85">
+                  Trusted by 50,000+ shoppers
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Right Form Card */}
-          <div className="lg:col-span-6 flex justify-center">
-            <div className="w-full max-w-md rounded-3xl border border-slate-800/90 bg-slate-900/90 p-6 sm:p-8 shadow-2xl backdrop-blur-2xl ring-1 ring-white/10 relative overflow-hidden">
-              {/* Top ambient glowing accent line */}
-              <div className="absolute top-0 left-6 right-6 h-[2px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-80" />
+          {/* Right Luminous Frosted White Glass Form Card */}
+          <div className="lg:col-span-6 flex justify-center lg:justify-end">
+            <div className="w-full max-w-md rounded-3xl border border-white/80 bg-white/90 p-6 sm:p-8 shadow-[0_25px_70px_-15px_rgba(0,0,0,0.45)] backdrop-blur-2xl ring-1 ring-black/5 relative overflow-hidden text-slate-900">
+              {/* Top Gradient Accent Bar */}
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand via-indigo-500 to-amber-500" />
 
               {/* Badge */}
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-indigo-500/10 px-3 py-1 text-[11px] font-semibold text-indigo-300 border border-indigo-500/20 mb-3 shadow-xs">
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1 text-[11px] font-bold text-brand border border-indigo-100 mb-3">
                 <span>✨</span>
                 <span>{badge}</span>
               </div>
 
-              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900">
                 {title}
               </h2>
-              <p className="mt-1.5 text-xs text-slate-400">{subtitle}</p>
+              <p className="mt-1 text-xs text-slate-500">{subtitle}</p>
 
               <div className="mt-6">{children}</div>
             </div>
@@ -145,9 +126,9 @@ export default function AuthShell({
         </div>
 
         {/* Footer */}
-        <footer className="pt-6 sm:pt-8 text-center text-xs text-slate-500 flex flex-wrap items-center justify-between gap-3 border-t border-slate-900 mt-auto">
-          <span>© {new Date().getFullYear()} ShopCart E-Commerce. All rights reserved.</span>
-          <div className="flex items-center gap-4 text-slate-400 text-[11px]">
+        <footer className="pt-4 sm:pt-6 text-center text-xs text-white/80 flex flex-wrap items-center justify-between gap-3 mt-auto drop-shadow-sm">
+          <span>© {new Date().getFullYear()} ShopCart Flagship Store. All rights reserved.</span>
+          <div className="flex items-center gap-4 text-[11px] text-white/85">
             <span className="hover:text-white transition cursor-pointer">Privacy Policy</span>
             <span>•</span>
             <span className="hover:text-white transition cursor-pointer">Terms of Service</span>
@@ -161,7 +142,7 @@ export default function AuthShell({
 }
 
 export const inputCls =
-  "w-full rounded-xl border border-slate-700/80 bg-slate-950/70 text-sm text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-indigo-500 focus:bg-slate-950 focus:ring-4 focus:ring-indigo-500/20 hover:border-slate-600";
+  "w-full rounded-xl border border-slate-200/90 bg-white/85 text-sm text-slate-900 placeholder-slate-400 outline-none transition-all duration-200 focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/15 hover:border-slate-300 shadow-2xs";
 
 export const btnCls =
-  "w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand via-indigo-600 to-brand bg-[length:200%_auto] px-4 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-600/30 transition-all duration-300 hover:bg-right hover:shadow-indigo-500/50 active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer";
+  "w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand via-indigo-600 to-brand bg-[length:200%_auto] px-4 py-3 text-sm font-bold text-white shadow-lg shadow-brand/30 transition-all duration-300 hover:bg-right hover:shadow-brand/45 active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer";
