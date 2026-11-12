@@ -2,9 +2,9 @@ import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <footer className="mt-20 border-t border-slate-200 bg-white text-slate-600">
+    <footer className="relative z-10 mt-20 border-t border-slate-200/80 bg-white/85 backdrop-blur-md text-slate-600">
       {/* Trust & Guarantee Banner */}
-      <div className="border-b border-slate-100 bg-slate-50 py-8">
+      <div className="border-b border-slate-100/80 bg-slate-50/75 py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div className="flex flex-col items-center">

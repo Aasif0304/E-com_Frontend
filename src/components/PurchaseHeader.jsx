@@ -14,7 +14,7 @@ export default function PurchaseHeader({
   ];
 
   return (
-    <div className="relative overflow-hidden bg-slate-900 border-b border-white/10">
+    <div className="relative z-10 overflow-hidden bg-slate-900 border-b border-white/10">
       {/* Store Interior Background */}
       <img
         src={storeBg}
@@ -25,16 +25,16 @@ export default function PurchaseHeader({
       {/* Balanced Editorial Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/55 to-indigo-950/75" />
 
-      <div className="relative z-10 mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+      <div className="relative z-10 mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10">
+        <div className="flex flex-col gap-4 sm:gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
             {badge && (
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-bold text-amber-200 backdrop-blur-md mb-2.5">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-bold text-amber-200 backdrop-blur-md mb-2">
                 <span>✨</span>
                 <span>{badge}</span>
               </span>
             )}
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white drop-shadow-sm">
+            <h1 className="text-xl sm:text-3xl font-black tracking-tight text-white drop-shadow-sm">
               {title}
             </h1>
             {subtitle && (
@@ -44,17 +44,17 @@ export default function PurchaseHeader({
             )}
           </div>
 
-          <div className="flex flex-col items-start sm:items-end gap-3">
+          <div className="flex flex-col items-start sm:items-end gap-2.5 sm:gap-3">
             {step && (
-              <div className="inline-flex items-center gap-1.5 sm:gap-2.5 rounded-2xl border border-white/15 bg-slate-950/55 px-3.5 py-2 backdrop-blur-xl shadow-lg">
+              <div className="inline-flex max-w-full overflow-x-auto no-scrollbar items-center gap-1.5 sm:gap-2.5 rounded-2xl border border-white/15 bg-slate-950/55 px-2.5 py-1.5 sm:px-3.5 sm:py-2 backdrop-blur-xl shadow-lg whitespace-nowrap">
                 {steps.map((s, idx) => {
                   const isDone = step > s.num;
                   const isCurrent = step === s.num;
                   return (
-                    <div key={s.num} className="flex items-center gap-1.5 sm:gap-2">
-                      <div className="flex items-center gap-1.5">
+                    <div key={s.num} className="flex items-center gap-1 sm:gap-2 shrink-0">
+                      <div className="flex items-center gap-1 sm:gap-1.5">
                         <span
-                          className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-black transition ${
+                          className={`flex h-4.5 w-4.5 sm:h-5 sm:w-5 items-center justify-center rounded-full text-[9px] sm:text-[10px] font-black transition ${
                             isDone
                               ? "bg-emerald-500 text-white"
                               : isCurrent
@@ -65,7 +65,7 @@ export default function PurchaseHeader({
                           {isDone ? "✓" : s.num}
                         </span>
                         <span
-                          className={`text-[11px] font-semibold ${
+                          className={`text-[10px] sm:text-[11px] font-semibold ${
                             isCurrent
                               ? "text-white"
                               : isDone

@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { getAddresses, createAddress } from "../api/addresses";
 import { createOrder } from "../api/orders";
-import { getAssetUrl } from "../api/axios";
+import { getPrimaryProductImage } from "../utils/images";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import PurchaseHeader from "../components/PurchaseHeader";
+import StorefrontBackdrop from "../components/StorefrontBackdrop";
+import { ProductThumbnail } from "../components/ProductMedia";
 
 const fieldCls =
   "w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 outline-none transition focus:border-brand focus:ring-3 focus:ring-brand/15";
@@ -116,7 +118,8 @@ export default function Checkout() {
 
   if (orderSuccess) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col">
+      <div className="relative min-h-screen flex flex-col">
+        <StorefrontBackdrop />
         <Navbar />
         <PurchaseHeader
           badge="Order Confirmed"
@@ -124,8 +127,8 @@ export default function Checkout() {
           subtitle={`Order #${orderSuccess.id} has been received and is being prepared for dispatch.`}
           step={3}
         />
-        <main className="mx-auto max-w-2xl px-4 py-12 text-center flex-1 w-full">
-          <div className="rounded-3xl border border-emerald-200/80 bg-white p-8 sm:p-10 shadow-xl shadow-emerald-500/10">
+        <main className="relative z-10 mx-auto max-w-2xl px-4 py-12 text-center flex-1 w-full">
+          <div className="rounded-3xl border border-emerald-200/80 bg-white/95 backdrop-blur-md p-8 sm:p-10 shadow-xl shadow-emerald-500/10">
             <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-3xl bg-emerald-50 text-5xl">
               🎉
             </div>
@@ -183,7 +186,8 @@ export default function Checkout() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
+    <div className="relative min-h-screen text-slate-900 flex flex-col">
+      <StorefrontBackdrop />
       <Navbar />
 
       <PurchaseHeader
@@ -193,7 +197,7 @@ export default function Checkout() {
         step={2}
       />
 
-      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 flex-1 w-full">
+      <main className="relative z-10 mx-auto max-w-6xl px-3 py-5 sm:px-6 sm:py-8 flex-1 w-full">
         {error && (
           <div className="mb-6 rounded-xl bg-red-50 p-3.5 text-xs font-medium text-red-700 border border-red-200 flex items-center gap-2">
             <span>⚠️</span>
@@ -205,7 +209,7 @@ export default function Checkout() {
           {/* Left Column: Address Selection & Payment */}
           <div className="space-y-6 lg:col-span-2">
             {/* Step 1: Address */}
-            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm">
+            <div className="rounded-3xl border border-slate-200/80 bg-white/95 backdrop-blur-md p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-base font-black text-slate-900 flex items-center gap-2">
                   <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-indigo-50 text-sm">
@@ -418,7 +422,7 @@ export default function Checkout() {
             </div>
 
             {/* Step 2: Payment Method */}
-            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm">
+            <div className="rounded-3xl border border-slate-200/80 bg-white/95 backdrop-blur-md p-6 shadow-sm">
               <h2 className="text-base font-black text-slate-900 flex items-center gap-2 mb-4">
                 <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-indigo-50 text-sm">
                   💳
@@ -441,23 +445,24 @@ export default function Checkout() {
 
           {/* Right Column: Order Summary */}
           <div className="lg:col-span-1">
-            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-xl shadow-slate-200/40 sticky top-24">
+            <div className="rounded-3xl border border-slate-200/80 bg-white/95 backdrop-blur-md p-6 shadow-xl shadow-slate-200/40 sticky top-24">
               <h2 className="text-base font-black text-slate-900 mb-4 border-b border-slate-100 pb-3">
                 Order Review
               </h2>
 
               <div className="divide-y divide-slate-100 max-h-64 overflow-y-auto mb-4">
                 {items.map((item) => {
-                  const thumb = item.image_url ? getAssetUrl(item.image_url) : null;
+                  const thumb = getPrimaryProductImage(item);
                   return (
                     <div key={item.cart_item_id} className="py-3 flex items-center justify-between gap-3 text-xs">
                       <div className="flex items-center gap-2.5 min-w-0">
                         <div className="h-10 w-10 shrink-0 rounded-xl bg-slate-100 border border-slate-200/70 overflow-hidden flex items-center justify-center">
-                          {thumb ? (
-                            <img src={thumb} alt={item.product_name} className="h-full w-full object-cover" />
-                          ) : (
-                            <span>📦</span>
-                          )}
+                          <ProductThumbnail
+                            src={thumb}
+                            alt={item.product_name}
+                            className="h-full w-full object-cover"
+                            placeholderIconClassName="h-5 w-5"
+                          />
                         </div>
                         <div className="min-w-0">
                           <p className="font-bold text-slate-800 truncate">{item.product_name}</p>

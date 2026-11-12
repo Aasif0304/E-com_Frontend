@@ -11,7 +11,14 @@ const api = axios.create({
 // Helper to convert backend relative image paths (e.g. /img/...) to absolute URLs
 export function getAssetUrl(path) {
   if (!path) return "";
-  if (path.startsWith("http://") || path.startsWith("https://")) return path;
+  if (
+    path.startsWith("http://") ||
+    path.startsWith("https://") ||
+    path.startsWith("data:") ||
+    path.startsWith("blob:")
+  ) {
+    return path;
+  }
   return `${API_BASE_URL}${path.startsWith("/") ? "" : "/"}${path}`;
 }
 

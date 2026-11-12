@@ -23,16 +23,16 @@ export default function AuthShell({
       {/* Main Container */}
       <div className="relative z-10 mx-auto w-full max-w-7xl flex-1 flex flex-col p-4 sm:p-6 lg:p-8">
         {/* Top Floating Glass Navigation */}
-        <header className="flex items-center justify-between pb-4 sm:pb-6">
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-brand to-indigo-500 text-2xl text-white shadow-lg shadow-black/25 ring-1 ring-white/30 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
+        <header className="flex items-center justify-between gap-2 pb-3 sm:pb-6">
+          <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group">
+            <div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-brand to-indigo-500 text-xl sm:text-2xl text-white shadow-lg shadow-black/25 ring-1 ring-white/30 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
               🛍️
             </div>
             <div className="flex flex-col drop-shadow-md">
-              <span className="text-xl font-black tracking-tight text-white">
+              <span className="text-lg sm:text-xl font-black tracking-tight text-white">
                 Shop<span className="text-indigo-300">Cart</span>
               </span>
-              <span className="text-[10px] font-bold text-white/80 tracking-wider uppercase -mt-0.5">
+              <span className="text-[9px] sm:text-[10px] font-bold text-white/80 tracking-wider uppercase -mt-0.5">
                 Flagship Store
               </span>
             </div>
@@ -40,7 +40,7 @@ export default function AuthShell({
 
           <Link
             to="/"
-            className="flex items-center gap-2 rounded-full border border-white/30 bg-slate-950/35 px-4 py-2 text-xs font-semibold text-white backdrop-blur-md transition-all duration-200 hover:bg-white hover:text-slate-900 shadow-lg"
+            className="flex items-center gap-1.5 sm:gap-2 rounded-full border border-white/30 bg-slate-950/35 px-3 py-1.5 sm:px-4 sm:py-2 text-xs font-semibold text-white backdrop-blur-md transition-all duration-200 hover:bg-white hover:text-slate-900 shadow-lg whitespace-nowrap"
           >
             <span>←</span>
             <span>Back to Store</span>
@@ -48,7 +48,7 @@ export default function AuthShell({
         </header>
 
         {/* Center Content: Airy Split Layout letting the store photo shine */}
-        <div className="my-auto grid items-center gap-8 lg:grid-cols-12 lg:gap-12 py-4">
+        <div className="my-auto grid items-center gap-6 sm:gap-8 lg:grid-cols-12 lg:gap-12 py-2 sm:py-4">
           {/* Left Editorial Showcase (minimal & open so store shelves & displays remain visible) */}
           <div className="hidden lg:col-span-6 lg:flex flex-col justify-end pt-16 pr-6">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-slate-950/40 px-3.5 py-1.5 text-xs font-semibold text-amber-200 backdrop-blur-md mb-5 w-fit shadow-md">
@@ -126,7 +126,7 @@ export default function AuthShell({
         </div>
 
         {/* Footer */}
-        <footer className="pt-4 sm:pt-6 text-center text-xs text-white/80 flex flex-wrap items-center justify-between gap-3 mt-auto drop-shadow-sm">
+        <footer className="pt-4 sm:pt-6 text-center text-xs text-white/80 flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3 mt-auto drop-shadow-sm">
           <span>© {new Date().getFullYear()} ShopCart Flagship Store. All rights reserved.</span>
           <div className="flex items-center gap-4 text-[11px] text-white/85">
             <span className="hover:text-white transition cursor-pointer">Privacy Policy</span>

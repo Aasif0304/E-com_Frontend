@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
-import { getAssetUrl } from "../api/axios";
+import { getPrimaryProductImage } from "../utils/images";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import PurchaseHeader from "../components/PurchaseHeader";
+import StorefrontBackdrop from "../components/StorefrontBackdrop";
+import { ProductThumbnail } from "../components/ProductMedia";
 
 export default function Cart() {
   const { token } = useAuth();
@@ -16,7 +18,8 @@ export default function Cart() {
 
   if (!token) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col">
+      <div className="relative min-h-screen flex flex-col">
+        <StorefrontBackdrop />
         <Navbar />
         <PurchaseHeader
           badge="Member Bag"
@@ -24,8 +27,8 @@ export default function Cart() {
           subtitle="Sign in to view your saved items and complete your order."
           step={1}
         />
-        <main className="mx-auto max-w-4xl px-4 py-14 text-center flex-1 w-full">
-          <div className="rounded-3xl border border-slate-200/80 bg-white p-10 shadow-xl shadow-slate-200/40 max-w-md mx-auto">
+        <main className="relative z-10 mx-auto max-w-4xl px-4 py-14 text-center flex-1 w-full">
+          <div className="rounded-3xl border border-slate-200/80 bg-white/95 backdrop-blur-md p-10 shadow-xl shadow-slate-200/40 max-w-md mx-auto">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-50 text-3xl">
               🔒
             </div>
@@ -95,7 +98,8 @@ export default function Cart() {
   const isEmpty = items.length === 0;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
+    <div className="relative min-h-screen text-slate-900 flex flex-col">
+      <StorefrontBackdrop />
       <Navbar />
 
       <PurchaseHeader
@@ -120,7 +124,7 @@ export default function Cart() {
         }
       />
 
-      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 flex-1 w-full">
+      <main className="relative z-10 mx-auto max-w-6xl px-3 py-5 sm:px-6 sm:py-8 flex-1 w-full">
         {error && (
           <div className="mb-6 rounded-xl bg-red-50 p-3.5 text-xs font-medium text-red-700 border border-red-200 flex items-center gap-2">
             <span>⚠️</span>
@@ -150,33 +154,30 @@ export default function Cart() {
             {/* Items List */}
             <div className="space-y-4 lg:col-span-2">
               {items.map((item) => {
-                const img = item.image_url ? getAssetUrl(item.image_url) : null;
+                const img = getPrimaryProductImage(item);
                 return (
                   <div
                     key={item.cart_item_id}
-                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-xs hover:shadow-md transition"
+                    className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3.5 sm:gap-4 rounded-2xl border border-slate-200/80 bg-white/95 backdrop-blur-md p-3.5 sm:p-5 shadow-xs hover:shadow-md transition"
                   >
                     {/* Product Info */}
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
                       <Link
                         to={`/product/${item.product_id}`}
-                        className="h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-slate-100 flex items-center justify-center border border-slate-200/80"
+                        className="h-16 w-16 sm:h-20 sm:w-20 shrink-0 overflow-hidden rounded-xl sm:rounded-2xl bg-slate-100 flex items-center justify-center border border-slate-200/80"
                       >
-                        {img ? (
-                          <img
-                            src={img}
-                            alt={item.product_name}
-                            className="h-full w-full object-cover hover:scale-105 transition"
-                          />
-                        ) : (
-                          <span className="text-2xl">📦</span>
-                        )}
+                        <ProductThumbnail
+                          src={img}
+                          alt={item.product_name}
+                          className="h-full w-full object-cover hover:scale-105 transition"
+                          placeholderIconClassName="h-7 w-7 sm:h-8 sm:w-8"
+                        />
                       </Link>
 
-                      <div>
+                      <div className="min-w-0">
                         <Link
                           to={`/product/${item.product_id}`}
-                          className="font-bold text-slate-900 hover:text-brand transition"
+                          className="font-bold text-sm sm:text-base text-slate-900 hover:text-brand transition block truncate"
                         >
                           {item.product_name}
                         </Link>
@@ -192,34 +193,34 @@ export default function Cart() {
                     </div>
 
                     {/* Quantity & Price Controls */}
-                    <div className="flex items-center justify-between sm:justify-end gap-5 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                    <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-5 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100">
                       {/* Qty Selector */}
-                      <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 overflow-hidden shadow-2xs">
+                      <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 overflow-hidden shadow-2xs shrink-0">
                         <button
                           onClick={() => handleQtyChange(item.cart_item_id, item.quantity - 1)}
                           disabled={actionLoading || item.quantity <= 1}
-                          className="px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-200 disabled:opacity-35 cursor-pointer transition"
+                          className="px-2.5 sm:px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-200 disabled:opacity-35 cursor-pointer transition"
                         >
                           −
                         </button>
-                        <span className="px-3.5 py-1.5 text-sm font-bold text-slate-900 bg-white border-x border-slate-200">
+                        <span className="px-3 sm:px-3.5 py-1.5 text-xs sm:text-sm font-bold text-slate-900 bg-white border-x border-slate-200">
                           {item.quantity}
                         </span>
                         <button
                           onClick={() => handleQtyChange(item.cart_item_id, item.quantity + 1)}
                           disabled={actionLoading || item.quantity >= item.stock}
-                          className="px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-200 disabled:opacity-35 cursor-pointer transition"
+                          className="px-2.5 sm:px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-200 disabled:opacity-35 cursor-pointer transition"
                         >
                           +
                         </button>
                       </div>
 
                       {/* Subtotal */}
-                      <div className="text-right min-w-[85px]">
+                      <div className="text-right min-w-[78px] sm:min-w-[88px]">
                         <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block">
                           Subtotal
                         </span>
-                        <span className="text-base font-black text-slate-900">
+                        <span className="text-sm sm:text-base font-black text-slate-900">
                           ₹{Number(item.subtotal).toLocaleString("en-IN")}
                         </span>
                       </div>
@@ -229,7 +230,7 @@ export default function Cart() {
                         onClick={() => handleRemove(item.cart_item_id)}
                         disabled={actionLoading}
                         title="Remove from cart"
-                        className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 border border-slate-200 text-slate-400 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition cursor-pointer"
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-50 border border-slate-200 text-slate-400 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition cursor-pointer"
                       >
                         🗑️
                       </button>
@@ -251,7 +252,7 @@ export default function Cart() {
 
             {/* Order Summary Sidebar */}
             <div className="lg:col-span-1">
-              <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-xl shadow-slate-200/40 sticky top-24">
+              <div className="rounded-3xl border border-slate-200/80 bg-white/95 backdrop-blur-md p-6 shadow-xl shadow-slate-200/40 sticky top-24">
                 <h2 className="text-base font-black text-slate-900 mb-4 border-b border-slate-100 pb-3 flex items-center justify-between">
                   <span>Order Summary</span>
                   <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-[10px] font-bold text-brand">

@@ -5,6 +5,7 @@ import { getOrders, cancelOrder } from "../api/orders";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import PurchaseHeader from "../components/PurchaseHeader";
+import StorefrontBackdrop from "../components/StorefrontBackdrop";
 
 const TRACK_STEPS = ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED"];
 
@@ -73,7 +74,8 @@ export default function Orders() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
+    <div className="relative min-h-screen text-slate-900 flex flex-col">
+      <StorefrontBackdrop />
       <Navbar />
 
       <PurchaseHeader
@@ -90,7 +92,7 @@ export default function Orders() {
         }
       />
 
-      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 flex-1 w-full">
+      <main className="relative z-10 mx-auto max-w-5xl px-3 py-5 sm:px-6 sm:py-8 flex-1 w-full">
         {error && (
           <div className="mb-6 rounded-xl bg-red-50 p-3.5 text-xs font-medium text-red-700 border border-red-200 flex items-center gap-2">
             <span>⚠️</span>
@@ -141,7 +143,7 @@ export default function Orders() {
               return (
                 <div
                   key={order.id}
-                  className="rounded-3xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-xs transition-all hover:shadow-lg"
+                  className="rounded-3xl border border-slate-200/80 bg-white/95 backdrop-blur-md p-5 sm:p-6 shadow-xs transition-all hover:shadow-lg"
                 >
                   {/* Order Top Bar */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
@@ -174,18 +176,18 @@ export default function Orders() {
                   {/* Live Order Progress Stepper */}
                   {order.status !== "CANCELLED" && activeStepIdx !== -1 && (
                     <div className="py-4 border-b border-slate-100">
-                      <div className="grid grid-cols-4 gap-2">
+                      <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
                         {TRACK_STEPS.map((stepLabel, idx) => {
                           const completed = idx <= activeStepIdx;
                           return (
-                            <div key={stepLabel} className="flex flex-col gap-1.5">
+                            <div key={stepLabel} className="flex flex-col gap-1.5 min-w-0">
                               <div
                                 className={`h-1.5 rounded-full transition-all ${
                                   completed ? "bg-gradient-to-r from-brand to-emerald-500" : "bg-slate-200"
                                 }`}
                               />
                               <span
-                                className={`text-[10px] font-bold tracking-wide uppercase ${
+                                className={`text-[9px] sm:text-[10px] font-bold tracking-tight sm:tracking-wide uppercase truncate text-center sm:text-left ${
                                   completed ? "text-slate-800" : "text-slate-400"
                                 }`}
                               >

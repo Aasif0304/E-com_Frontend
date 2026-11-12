@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { getProduct, getProducts } from "../api/products";
-import { getAssetUrl } from "../api/axios";
+import { getProductImages } from "../utils/images";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import StorefrontBackdrop from "../components/StorefrontBackdrop";
+import ProductImageGallery from "../components/ProductImageGallery";
+import { ProductCardImage } from "../components/ProductMedia";
 import storeBg from "../assets/store-bg.jpg";
 
 export default function ProductDetail() {
@@ -105,21 +108,24 @@ export default function ProductDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 text-slate-900">
+      <div className="relative min-h-screen flex flex-col text-slate-900">
+        <StorefrontBackdrop />
         <Navbar />
-        <div className="mx-auto max-w-6xl px-4 py-16 text-center">
+        <div className="relative z-10 mx-auto max-w-6xl px-4 py-16 text-center flex-1">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-brand border-t-transparent mb-4"></div>
           <p className="text-slate-600 font-medium">Loading product details...</p>
         </div>
+        <Footer />
       </div>
     );
   }
 
   if (error || !product) {
     return (
-      <div className="min-h-screen bg-slate-50 text-slate-900">
+      <div className="relative min-h-screen flex flex-col text-slate-900">
+        <StorefrontBackdrop />
         <Navbar />
-        <div className="mx-auto max-w-xl px-4 py-20 text-center">
+        <div className="relative z-10 mx-auto max-w-xl px-4 py-20 text-center flex-1">
           <span className="text-6xl block mb-4">😕</span>
           <h2 className="text-2xl font-bold text-slate-800 mb-2">
             Product Not Found
@@ -134,11 +140,12 @@ export default function ProductDetail() {
             ← Back to Store
           </Link>
         </div>
+        <Footer />
       </div>
     );
   }
 
-  const imageUrl = product.image_url ? getAssetUrl(product.image_url) : null;
+  const productImages = getProductImages(product);
   const isOutOfStock = product.stock <= 0;
   const categoryName = product.category?.name || product.category_name || "General";
 
@@ -149,11 +156,12 @@ export default function ProductDetail() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="relative min-h-screen flex flex-col text-slate-900">
+      <StorefrontBackdrop />
       <Navbar />
 
       {/* Flagship Store Breadcrumb Banner */}
-      <div className="relative overflow-hidden bg-slate-900 border-b border-white/10">
+      <div className="relative z-10 overflow-hidden bg-slate-900 border-b border-white/10">
         <img
           src={storeBg}
           alt=""
@@ -182,11 +190,11 @@ export default function ProductDetail() {
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-2xl bg-slate-900 px-5 py-3.5 text-sm font-semibold text-white shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-200">
-          <span>{toastMessage}</span>
+        <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:bottom-6 sm:right-6 z-50 flex items-center justify-between sm:justify-start gap-3 rounded-2xl bg-slate-900 px-4 py-3 sm:px-5 sm:py-3.5 text-xs sm:text-sm font-semibold text-white shadow-2xl">
+          <span className="truncate">{toastMessage}</span>
           <Link
             to="/cart"
-            className="ml-2 rounded-lg bg-brand px-3 py-1 text-xs font-bold text-white hover:bg-brand-dark transition"
+            className="shrink-0 sm:ml-2 rounded-lg bg-brand px-3 py-1 text-xs font-bold text-white hover:bg-brand-dark transition whitespace-nowrap"
           >
             View Cart 🛒
           </Link>
@@ -194,83 +202,66 @@ export default function ProductDetail() {
       )}
 
       {/* Main Container */}
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+      <main className="relative z-10 mx-auto max-w-7xl px-3 py-4 sm:px-6 sm:py-8 flex-1 w-full">
         {/* 🌟 Luxury 2-Column Product Showcase */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xl shadow-slate-200/50">
-          {/* ================= LEFT COLUMN: BIG IMAGE & BUY BUTTONS ================= */}
-          <div className="lg:col-span-5 flex flex-col space-y-6">
-            {/* Big High-Resolution Product Image */}
-            <div className="relative w-full h-[380px] sm:h-[460px] rounded-3xl border border-slate-200/80 bg-slate-50/50 p-4 flex items-center justify-center overflow-hidden group shadow-inner">
-              {imageUrl ? (
-                <img
-                  src={imageUrl}
-                  alt={product.name}
-                  className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                    e.currentTarget.nextSibling.style.display = "flex";
-                  }}
-                />
-              ) : null}
-
-              <div
-                className={`w-full h-full items-center justify-center text-7xl text-slate-300 ${
-                  imageUrl ? "hidden" : "flex"
-                }`}
-              >
-                📦
-              </div>
-
-              {/* Stock Status Pill on Top */}
-              {isOutOfStock ? (
-                <span className="absolute top-4 left-4 rounded-xl bg-rose-600 px-3 py-1 text-xs font-bold text-white shadow-md uppercase tracking-wider">
-                  Out of Stock
-                </span>
-              ) : product.stock <= 5 ? (
-                <span className="absolute top-4 left-4 rounded-xl bg-amber-500 px-3 py-1 text-xs font-bold text-white shadow-md uppercase tracking-wider animate-pulse">
-                  Only {product.stock} Left!
-                </span>
-              ) : (
-                <span className="absolute top-4 left-4 rounded-xl bg-emerald-600 px-3 py-1 text-xs font-bold text-white shadow-md uppercase tracking-wider">
-                  In Stock
-                </span>
-              )}
-
-              {/* Share / Wishlist Icon */}
-              <button
-                onClick={() => showToast("Added to your wishlist! ❤️")}
-                className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/95 border border-slate-200 flex items-center justify-center text-lg text-slate-400 hover:text-rose-500 hover:scale-110 shadow-sm transition cursor-pointer"
-                title="Wishlist"
-              >
-                ♥
-              </button>
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 items-start gap-6 lg:gap-8 bg-white/95 backdrop-blur-md p-4 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-200/80 shadow-xl shadow-slate-200/50">
+          {/* ================= LEFT COLUMN: IMAGE GALLERY & BUY BUTTONS ================= */}
+          <div className="lg:col-span-5 flex flex-col space-y-4 sm:space-y-6">
+            {/* Interactive Product Image Gallery */}
+            <ProductImageGallery
+              images={productImages}
+              productName={product.name}
+              topLeftBadge={
+                isOutOfStock ? (
+                  <span className="absolute top-4 left-4 z-10 rounded-xl bg-rose-600 px-3 py-1 text-xs font-bold text-white shadow-md uppercase tracking-wider">
+                    Out of Stock
+                  </span>
+                ) : product.stock <= 5 ? (
+                  <span className="absolute top-4 left-4 z-10 rounded-xl bg-amber-500 px-3 py-1 text-xs font-bold text-white shadow-md uppercase tracking-wider animate-pulse">
+                    Only {product.stock} Left!
+                  </span>
+                ) : (
+                  <span className="absolute top-4 left-4 z-10 rounded-xl bg-emerald-600 px-3 py-1 text-xs font-bold text-white shadow-md uppercase tracking-wider">
+                    In Stock
+                  </span>
+                )
+              }
+              topRightAction={
+                <button
+                  onClick={() => showToast("Added to your wishlist! ❤️")}
+                  className="absolute top-4 right-4 z-10 h-10 w-10 rounded-full bg-white/95 border border-slate-200 flex items-center justify-center text-lg text-slate-400 hover:text-rose-500 hover:scale-110 shadow-sm transition cursor-pointer"
+                  title="Wishlist"
+                >
+                  ♥
+                </button>
+              }
+            />
 
             {/* Modern Gradient Action Buttons: ADD TO CART & BUY NOW */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-4">
               <button
                 onClick={handleAddToCart}
                 disabled={addingToCart || isOutOfStock}
-                className={`w-full py-4 px-4 rounded-2xl font-extrabold text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer ${
+                className={`w-full py-3.5 px-3 sm:py-4 sm:px-4 rounded-xl sm:rounded-2xl font-extrabold text-xs sm:text-sm uppercase tracking-wide sm:tracking-wider flex items-center justify-center gap-1.5 sm:gap-2 shadow-lg transition-all cursor-pointer whitespace-nowrap ${
                   isOutOfStock
                     ? "bg-slate-200 text-slate-400 cursor-not-allowed shadow-none"
                     : "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-amber-500/30 active:scale-95"
                 }`}
               >
-                <span className="text-lg">🛒</span>
+                <span className="text-base sm:text-lg">🛒</span>
                 <span>{addingToCart ? "Adding..." : "Add to Cart"}</span>
               </button>
 
               <button
                 onClick={handleBuyNow}
                 disabled={buyingNow || isOutOfStock}
-                className={`w-full py-4 px-4 rounded-2xl font-extrabold text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer ${
+                className={`w-full py-3.5 px-3 sm:py-4 sm:px-4 rounded-xl sm:rounded-2xl font-extrabold text-xs sm:text-sm uppercase tracking-wide sm:tracking-wider flex items-center justify-center gap-1.5 sm:gap-2 shadow-lg transition-all cursor-pointer whitespace-nowrap ${
                   isOutOfStock
                     ? "bg-slate-200 text-slate-400 cursor-not-allowed shadow-none"
                     : "bg-gradient-to-r from-brand via-indigo-600 to-brand hover:from-brand-dark hover:to-indigo-700 text-white shadow-brand/30 active:scale-95"
                 }`}
               >
-                <span className="text-lg">⚡</span>
+                <span className="text-base sm:text-lg">⚡</span>
                 <span>{buyingNow ? "Proceeding..." : "Buy Now"}</span>
               </button>
             </div>
@@ -392,7 +383,7 @@ export default function ProductDetail() {
               <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
                 Delivery & Services
               </h3>
-              <div className="flex max-w-xs items-center gap-2">
+              <div className="flex max-w-full sm:max-w-xs items-center gap-2">
                 <input
                   type="text"
                   value={pincode}
@@ -458,55 +449,48 @@ export default function ProductDetail() {
 
         {/* ================= RELATED PRODUCTS SECTION ================= */}
         {relatedProducts.length > 0 && (
-          <div className="mt-12 space-y-4">
-            <div className="flex items-center justify-between">
+          <div className="mt-8 sm:mt-12 space-y-4">
+            <div className="flex items-center justify-between gap-2">
               <div>
-                <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
+                <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">
                   Similar Products You Might Like
                 </h2>
                 <p className="text-xs text-slate-500">
                   Popular items under {categoryName}
                 </p>
               </div>
-              <Link to="/" className="text-xs font-bold text-brand hover:underline">
-                View All Catalog →
+              <Link to="/" className="shrink-0 text-xs font-bold text-brand hover:underline whitespace-nowrap">
+                View All →
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
-              {relatedProducts.map((rel) => {
-                const relImg = rel.image_url ? getAssetUrl(rel.image_url) : null;
-                return (
-                  <Link
-                    key={rel.id}
-                    to={`/product/${rel.id}`}
-                    className="group rounded-2xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md transition flex flex-col cursor-pointer"
-                  >
-                    <div className="h-44 w-full rounded-xl bg-slate-100 overflow-hidden mb-3 flex items-center justify-center">
-                      {relImg ? (
-                        <img
-                          src={relImg}
-                          alt={rel.name}
-                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                        />
-                      ) : (
-                        <span className="text-3xl text-slate-400">📦</span>
-                      )}
-                    </div>
-                    <h3 className="font-semibold text-slate-900 text-sm truncate group-hover:text-brand transition">
-                      {rel.name}
-                    </h3>
-                    <div className="mt-auto pt-2 flex items-center justify-between">
-                      <span className="font-extrabold text-slate-900 text-base">
-                        ₹{Number(rel.price).toLocaleString("en-IN")}
-                      </span>
-                      <span className="text-xs font-semibold text-brand">
-                        View Item →
-                      </span>
-                    </div>
-                  </Link>
-                );
-              })}
+            <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-4">
+              {relatedProducts.map((rel) => (
+                <Link
+                  key={rel.id}
+                  to={`/product/${rel.id}`}
+                  className="group rounded-2xl border border-slate-200/80 bg-white/95 backdrop-blur-md p-2.5 sm:p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition flex flex-col cursor-pointer"
+                >
+                  <div className="relative h-36 sm:h-44 w-full rounded-xl bg-slate-100 overflow-hidden mb-2.5 sm:mb-3 flex items-center justify-center">
+                    <ProductCardImage
+                      product={rel}
+                      imgClassName="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      placeholderIconClassName="h-10 w-10"
+                    />
+                  </div>
+                  <h3 className="font-semibold text-slate-900 text-xs sm:text-sm truncate group-hover:text-brand transition">
+                    {rel.name}
+                  </h3>
+                  <div className="mt-auto pt-2 flex items-center justify-between gap-1">
+                    <span className="font-extrabold text-slate-900 text-sm sm:text-base">
+                      ₹{Number(rel.price).toLocaleString("en-IN")}
+                    </span>
+                    <span className="text-[11px] sm:text-xs font-semibold text-brand whitespace-nowrap">
+                      View →
+                    </span>
+                  </div>
+                </Link>
+              ))}
             </div>
           </div>
         )}
